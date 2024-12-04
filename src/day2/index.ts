@@ -51,11 +51,11 @@ const part1 = () => {
 const part2 = () => {
   const rows = parseInput(input);
 
-  const parsedRows = rows.filter((row) => {
-    const getRowPermutations = (arr: number[]) => {
-      return arr.map((_, idx) => arr.toSpliced(idx, 1));
-    };
+  const getRowPermutations = (arr: number[]) => {
+    return arr.map((_, idx) => arr.toSpliced(idx, 1));
+  };
 
+  const parsedRows = rows.filter((row) => {
     return isRowSafe(row) || getRowPermutations(row).some(isRowSafe);
   });
 
