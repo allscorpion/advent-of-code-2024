@@ -142,7 +142,7 @@ const part2 = () => {
         }
       });
 
-      if (masCount === 2) {
+      if (masCount === directions.length) {
         totalXmas += 1;
       }
     }
