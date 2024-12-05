@@ -1,11 +1,6 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import { getInput } from "../utils/get-input.ts";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const input = getInput(__dirname, "./input.txt");
+const input = getInput(import.meta.dirname, "./input.txt");
 
 const getParsedInput = (input: string) => {
   return input.split("\r\n").map((str) => str.split(""));

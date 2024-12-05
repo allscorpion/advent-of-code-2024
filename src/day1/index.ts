@@ -1,9 +1,6 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import { getInput } from "../utils/get-input.ts";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const input = getInput(import.meta.dirname);
 
 type ParsedInputType = [number[], number[]];
 
@@ -33,7 +30,6 @@ const sortInput = (input: ParsedInputType): ParsedInputType => {
   return newInput;
 };
 
-const input = getInput(__dirname);
 const [firstArr, secondArr] = sortInput(parseInput(input));
 
 const part1 = () => {

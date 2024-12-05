@@ -1,11 +1,6 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import { getInput } from "../utils/get-input.ts";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const input = getInput(__dirname, "./input.txt");
+const input = getInput(import.meta.dirname);
 
 const getParsedInput = (input: string) => {
   const regex = new RegExp(/do\(\)|don't\(\)|mul\([0-9]{1,3},[0-9]{1,3}\)/g);
