@@ -48,54 +48,46 @@ const getTotal = (input: string[][]) => {
 const part1 = () => {
   const parsedInput = getParsedInput(input);
 
-  const activeColumnIndex = parsedInput.findIndex((row) => {
+  const activeRowIndex = parsedInput.findIndex((row) => {
     return row.some((column) => column === "^");
   });
 
-  const activeRowIndex = parsedInput[activeColumnIndex].findIndex((column) => {
+  const activeColumnIndex = parsedInput[activeRowIndex].findIndex((column) => {
     return column === "^";
   });
 
   let currentDirectionIndex = 0;
 
-  parsedInput[activeColumnIndex][activeRowIndex] = "X";
+  parsedInput[activeRowIndex][activeColumnIndex] = "X";
 
   let currentDirection = directions[currentDirectionIndex];
+  let currentCoords = { x: activeColumnIndex, y: activeRowIndex };
 
-  let activeSquareCords = currentDirection(activeRowIndex, activeColumnIndex);
-  let activeSquare = parsedInput[activeSquareCords.y]?.[activeSquareCords.x];
+  let walking = true;
 
-  while (activeSquare) {
-    if (activeSquare === "." || activeSquare === "X") {
-      parsedInput[activeSquareCords.y][activeSquareCords.x] = "X";
+  while (walking) {
+    let nextSquareCords = currentDirection(currentCoords.x, currentCoords.y);
+    let nextSquare = parsedInput[nextSquareCords.y]?.[nextSquareCords.x];
 
-      const prevCoords = activeSquareCords;
-
-      activeSquareCords = currentDirection(
-        activeSquareCords.x,
-        activeSquareCords.y
-      );
-
-      activeSquare = parsedInput[activeSquareCords.y]?.[activeSquareCords.x];
-
-      if (activeSquare === "#") {
-        currentDirectionIndex =
-          currentDirectionIndex + 1 === directions.length
-            ? 0
-            : currentDirectionIndex + 1;
-        currentDirection = directions[currentDirectionIndex];
-
-        activeSquareCords = prevCoords;
-
-        activeSquare = parsedInput[activeSquareCords.y]?.[activeSquareCords.x];
-        continue;
-      }
+    if (!nextSquare) {
+      walking = false;
       continue;
     }
-    if (activeSquare === "#") {
-      console.log("square hit");
-      return;
+
+    if (nextSquare === "#") {
+      currentDirectionIndex =
+        currentDirectionIndex + 1 === directions.length
+          ? 0
+          : currentDirectionIndex + 1;
+      currentDirection = directions[currentDirectionIndex];
+      continue;
     }
+
+    if (nextSquare === ".") {
+      parsedInput[nextSquareCords.y][nextSquareCords.x] = "X";
+    }
+
+    currentCoords = nextSquareCords;
   }
 
   renderGrid(parsedInput);
@@ -130,11 +122,11 @@ const getAllCustomGrids = (input: string[][]) => {
 const part2 = () => {
   const parsedInput = getParsedInput(input);
 
-  const activeColumnIndex = parsedInput.findIndex((row) => {
+  const activeRowIndex = parsedInput.findIndex((row) => {
     return row.some((column) => column === "^");
   });
 
-  const activeRowIndex = parsedInput[activeColumnIndex].findIndex((column) => {
+  const activeColumnIndex = parsedInput[activeRowIndex].findIndex((column) => {
     return column === "^";
   });
 
@@ -153,61 +145,50 @@ const part2 = () => {
 
     let currentDirection = directions[currentDirectionIndex];
 
-    let activeSquareCords = currentDirection(activeRowIndex, activeColumnIndex);
-    let activeSquare: string | undefined =
-      customGrid[activeSquareCords.y]?.[activeSquareCords.x];
+    let currentCoords = { x: activeColumnIndex, y: activeRowIndex };
+    let walking = true;
 
-    while (activeSquare) {
-      if (activeSquare === "." || activeSquare === "^") {
-        const prevCoords = activeSquareCords;
+    while (walking) {
+      let nextSquareCords = currentDirection(currentCoords.x, currentCoords.y);
+      let nextSquare = customGrid[nextSquareCords.y]?.[nextSquareCords.x];
 
-        activeSquareCords = currentDirection(
-          activeSquareCords.x,
-          activeSquareCords.y
-        );
-
-        activeSquare = customGrid[activeSquareCords.y]?.[activeSquareCords.x];
-
-        if (activeSquare === "#") {
-          currentDirectionIndex =
-            currentDirectionIndex + 1 === directions.length
-              ? 0
-              : currentDirectionIndex + 1;
-          currentDirection = directions[currentDirectionIndex];
-
-          activeSquareCords = prevCoords;
-
-          const directionShift = {
-            x: activeSquareCords.x,
-            y: activeSquareCords.y,
-            direction: currentDirection,
-          };
-
-          if (
-            directionsShifts.some((shift) => {
-              return (
-                shift.direction === directionShift.direction &&
-                shift.x === directionShift.x &&
-                shift.y === directionShift.y
-              );
-            })
-          ) {
-            isStuckCount += 1;
-            activeSquare = undefined;
-            return;
-          }
-
-          directionsShifts.push(directionShift);
-
-          activeSquare = customGrid[activeSquareCords.y]?.[activeSquareCords.x];
-          continue;
-        }
+      if (!nextSquare) {
+        walking = false;
         continue;
       }
-      if (activeSquare === "#") {
-        console.log("square hit");
-        return;
+
+      if (nextSquare === "#") {
+        currentDirectionIndex =
+          currentDirectionIndex + 1 === directions.length
+            ? 0
+            : currentDirectionIndex + 1;
+        currentDirection = directions[currentDirectionIndex];
+
+        const directionShift = {
+          x: nextSquareCords.x,
+          y: nextSquareCords.y,
+          direction: currentDirection,
+        };
+
+        const hasSeenSquareBefore = directionsShifts.some((shift) => {
+          return (
+            shift.direction === directionShift.direction &&
+            shift.x === directionShift.x &&
+            shift.y === directionShift.y
+          );
+        });
+
+        if (hasSeenSquareBefore) {
+          isStuckCount += 1;
+          walking = false;
+          continue;
+        }
+
+        directionsShifts.push(directionShift);
+        continue;
       }
+
+      currentCoords = nextSquareCords;
     }
   });
 
