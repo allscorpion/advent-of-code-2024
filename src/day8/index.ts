@@ -61,7 +61,9 @@ const part1 = () => {
     antiNodeCoords.add(coords);
   };
 
-  for (const [character, coords] of Object.entries(antennas)) {
+  for (const antenna in antennas) {
+    const coords = antennas[antenna];
+
     let [first, ...rest] = coords;
 
     while (rest.length) {
@@ -99,7 +101,8 @@ const part2 = () => {
     antiNodeCoords.add(coords);
   };
 
-  for (const [character, coords] of Object.entries(antennas)) {
+  for (const antenna in antennas) {
+    const coords = antennas[antenna];
     let [first, ...rest] = coords;
 
     if (coords.length > 1) {
