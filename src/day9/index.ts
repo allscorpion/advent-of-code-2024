@@ -94,7 +94,11 @@ const swapNumbers = (parsedInput: string[][]) => {
 
     try {
       indexesOfFreeSpace.forEach((indexOfFreeSpace) => {
-        if (indexOfFreeSpace > i) return;
+        if (indexOfFreeSpace > i) {
+          indexesToRemove.push(indexOfFreeSpace);
+          return;
+        }
+
         const freeSpace = parsedInput[indexOfFreeSpace];
 
         if (!freeSpace) {
