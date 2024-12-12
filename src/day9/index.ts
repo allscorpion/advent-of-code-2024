@@ -65,12 +65,12 @@ const swapItems = (
   });
 };
 
-const checksum = (input: (number | string)[]) => {
+const checksum = (input: (number | ".")[]) => {
   const parsedInput = input;
 
   return parsedInput.reduce<number>((acc, item, i) => {
     if (item === ".") return acc;
-    return acc + Number(item) * i;
+    return acc + item * i;
   }, 0);
 };
 
