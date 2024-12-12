@@ -1,4 +1,5 @@
 import { getInput } from "../utils/get-input.ts";
+import { performanceTest } from "../utils/performance-test.ts";
 
 const input = getInput(import.meta.dirname, "./input.txt");
 
@@ -96,7 +97,7 @@ const swapNumbers = (parsedInput: string[][]) => {
       const indexOfFreeSpace = indexesOfFreeSpace[x];
       if (indexOfFreeSpace > i) {
         indexesToRemove.push(indexOfFreeSpace);
-        break;
+        continue;
       }
 
       const freeSpace = parsedInput[indexOfFreeSpace];
