@@ -1,6 +1,6 @@
-import { file } from "./file.ts";
+import { getInput } from "../utils/get-input.ts";
 
-const input = file;
+const input = getInput(import.meta.dirname, "./input.txt");
 
 const getParsedInput = (input: string, withGroups: boolean): string[][] => {
   const numbers = input.trim().split("").map(Number);
@@ -75,9 +75,13 @@ const checksum = (input: (number | ".")[]) => {
 };
 
 const swapNumbers = (parsedInput: string[][]) => {
-  const indexesOfFreeSpace = getIndexesOfFreeSpace(parsedInput);
+  let indexesOfFreeSpace = getIndexesOfFreeSpace(parsedInput);
 
   for (let i = parsedInput.length - 1; i > 0; i--) {
+    if (!indexesOfFreeSpace.length) {
+      break;
+    }
+
     const item = parsedInput[i];
 
     if (indexesOfFreeSpace.includes(i)) continue;
@@ -86,16 +90,36 @@ const swapNumbers = (parsedInput: string[][]) => {
   }
 
   function checkFreeSpaces(item: string[], i: number) {
-    for (let freeSpaceIndex = 0; freeSpaceIndex < i; freeSpaceIndex++) {
-      const freeSpace = parsedInput[freeSpaceIndex];
-      const freeSpaceLeft = freeSpace.filter((space) => {
-        return space === ".";
-      }).length;
+    const indexesToRemove: number[] = [];
 
-      if (freeSpaceLeft >= item.length) {
-        swapItems(parsedInput, item, i, freeSpaceIndex);
-        break;
-      }
+    try {
+      indexesOfFreeSpace.forEach((indexOfFreeSpace) => {
+        if (indexOfFreeSpace > i) return;
+        const freeSpace = parsedInput[indexOfFreeSpace];
+
+        if (!freeSpace) {
+          indexesToRemove.push(indexOfFreeSpace);
+          return;
+        }
+
+        const freeSpaceLeft = freeSpace.filter((space) => {
+          return space === ".";
+        }).length;
+
+        if (freeSpaceLeft === 0) {
+          indexesToRemove.push(indexOfFreeSpace);
+        }
+
+        if (freeSpaceLeft >= item.length) {
+          swapItems(parsedInput, item, i, indexOfFreeSpace);
+          throw new Error("exit early");
+        }
+      });
+    } catch (e) {}
+    if (indexesToRemove.length) {
+      indexesOfFreeSpace = indexesOfFreeSpace.filter((index) => {
+        return !indexesToRemove.includes(index);
+      });
     }
   }
 };
