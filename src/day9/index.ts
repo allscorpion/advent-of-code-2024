@@ -92,34 +92,34 @@ const swapNumbers = (parsedInput: string[][]) => {
   function checkFreeSpaces(item: string[], i: number) {
     const indexesToRemove: number[] = [];
 
-    try {
-      indexesOfFreeSpace.forEach((indexOfFreeSpace) => {
-        if (indexOfFreeSpace > i) {
-          indexesToRemove.push(indexOfFreeSpace);
-          return;
-        }
+    for (let x = 0; x < indexesOfFreeSpace.length; x++) {
+      const indexOfFreeSpace = indexesOfFreeSpace[x];
+      if (indexOfFreeSpace > i) {
+        indexesToRemove.push(indexOfFreeSpace);
+        break;
+      }
 
-        const freeSpace = parsedInput[indexOfFreeSpace];
+      const freeSpace = parsedInput[indexOfFreeSpace];
 
-        if (!freeSpace) {
-          indexesToRemove.push(indexOfFreeSpace);
-          return;
-        }
+      if (!freeSpace) {
+        indexesToRemove.push(indexOfFreeSpace);
+        break;
+      }
 
-        const freeSpaceLeft = freeSpace.filter((space) => {
-          return space === ".";
-        }).length;
+      const freeSpaceLeft = freeSpace.filter((space) => {
+        return space === ".";
+      }).length;
 
-        if (freeSpaceLeft === 0) {
-          indexesToRemove.push(indexOfFreeSpace);
-        }
+      if (freeSpaceLeft === 0) {
+        indexesToRemove.push(indexOfFreeSpace);
+      }
 
-        if (freeSpaceLeft >= item.length) {
-          swapItems(parsedInput, item, i, indexOfFreeSpace);
-          throw new Error("exit early");
-        }
-      });
-    } catch (e) {}
+      if (freeSpaceLeft >= item.length) {
+        swapItems(parsedInput, item, i, indexOfFreeSpace);
+        break;
+      }
+    }
+
     if (indexesToRemove.length) {
       indexesOfFreeSpace = indexesOfFreeSpace.filter((index) => {
         return !indexesToRemove.includes(index);
